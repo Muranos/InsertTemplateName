@@ -1,0 +1,11 @@
+.classpath
+.project
+bin/dbmods/InsertTemplateName$1.class
+bin/dbmods/InsertTemplateName$2.class
+bin/dbmods/InsertTemplateName.class
+bin/sql/Connector.class
+bin/sql/InsertIntoParseTemplate.class
+bin/sql/QueryProvider.class
+bin/sql/ResultFormatter.class
+bin/sql/UpdateExecutor.class
+src/sql/UpdateExecutor.java
