@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -48,11 +49,14 @@ public class InsertTemplateName extends javax.swing.JFrame {
 	private JTextField jTemplateNameText;
 	private JLabel jTemplateNameLabel;
 	private JButton jRunButton;
+	private JComboBox jServerList;
 	private JComboBox jTechnologyList;
 	private JLabel jUserNameLabel;
 	private JLabel jTechnologyLabel;
 	private JCheckBox jHasIdStageCheckbox;
 	private JCheckBox jIsExchange;
+	private JCheckBox jHasDivideStageCheckbox;
+	private JCheckBox jHasParseStageCheckbox;
 
 	/**
 	* Auto-generated main method to display this JFrame
@@ -84,7 +88,7 @@ public class InsertTemplateName extends javax.swing.JFrame {
 			jTemplateNameText = new JTextField();  
 			getContentPane().add(jTemplateNameText);
 			jTemplateNameText.setText("");
-			jTemplateNameText.setBounds(192, 40, 152, 23);
+			jTemplateNameText.setBounds(192, 40, 185, 23);
 			//END <<  jTemplateNameText
 			//START >>  jTemplateNameLabel
 			jTemplateNameLabel = new JLabel();
@@ -96,14 +100,28 @@ public class InsertTemplateName extends javax.swing.JFrame {
 			jHasIdStageCheckbox = new JCheckBox();
 			getContentPane().add(jHasIdStageCheckbox);
 			jHasIdStageCheckbox.setText("Has ID Stage?");
-			jHasIdStageCheckbox.setBounds(77, 149, 122, 20);
+			jHasIdStageCheckbox.setBounds(47, 149, 122, 20);
 			//END <<  jHasIdStageCheckbox
 			//START >>  jIsExchange
 			jIsExchange = new JCheckBox();
 			getContentPane().add(jIsExchange);
 			jIsExchange.setText("Is Exchange?");
-			jIsExchange.setBounds(247, 149, 122, 20);
+			jIsExchange.setBounds(227, 149, 122, 20);
 			//END <<  jIsExchange
+			
+			//START >>  jHasDivideStageCheckbox
+			jHasDivideStageCheckbox = new JCheckBox();
+			getContentPane().add(jHasDivideStageCheckbox);
+			jHasDivideStageCheckbox.setText("Has Divide Stage?");
+			jHasDivideStageCheckbox.setBounds(47, 180, 142, 20);
+			//END <<  jHasDivideStageCheckbox
+			//START >>  jHasParseStageCheckbox
+			jHasParseStageCheckbox = new JCheckBox();
+			getContentPane().add(jHasParseStageCheckbox);
+			jHasParseStageCheckbox.setText("Has Parse Stage?");
+			jHasParseStageCheckbox.setBounds(227, 180, 142, 20);
+			//END <<  jHasParseStageCheckbox
+			
 			//START >>  jTechnologyLabel
 			jTechnologyLabel = new JLabel();
 			getContentPane().add(jTechnologyLabel);
@@ -120,13 +138,21 @@ public class InsertTemplateName extends javax.swing.JFrame {
 			jRunButton = new JButton();
 			getContentPane().add(jRunButton);
 			jRunButton.setText("Insert");
-			jRunButton.setBounds(157, 291, 67, 23);
+			jRunButton.setBounds(157, 351, 67, 23);
 			jRunButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
 					jRunButtonActionPerformed(evt);
 				}
 			});
 			//END <<  jRunButton
+			//START >>  jServerList
+			ComboBoxModel jServerListModel = 
+			new DefaultComboBoxModel(SERVER);
+			jServerList = new JComboBox();
+			getContentPane().add(jServerList);
+			jServerList.setModel(jServerListModel);
+			jServerList.setBounds(5, 5, 78, 23);
+			//END <<  jServerList
 			//START >>  jTechnologyList
 			ComboBoxModel jTechnologyListModel = 
 			new DefaultComboBoxModel(TECHNOLOGY);
@@ -149,7 +175,7 @@ public class InsertTemplateName extends javax.swing.JFrame {
 			scrollPane.setViewportView(jInfoArea);
 			getContentPane().add(scrollPane, BorderLayout.CENTER);
 			
-			Rectangle rect = new Rectangle(22, 183, 350, 95);
+			Rectangle rect = new Rectangle(22, 223, 350, 115);
 			scrollPane.setBounds(rect);
 			jInfoArea.setEditable(false);
 			jInfoArea.setLineWrap(true);
@@ -157,7 +183,8 @@ public class InsertTemplateName extends javax.swing.JFrame {
 			jInfoArea.setBounds(rect);
 			//END <<  jInfoArea
 			pack();
-			this.setSize(410, 364);
+			this.setSize(410, 424);
+			jTemplateNameText.requestFocus();
 		} catch (Exception e) {
 		    //add your error handling code here
 			e.printStackTrace();
@@ -180,10 +207,19 @@ public class InsertTemplateName extends javax.swing.JFrame {
 		String username = jUserList.getSelectedItem().toString();
 		boolean hasIdStage = jHasIdStageCheckbox.isSelected();
 		boolean isExchange = jIsExchange.isSelected();
+		boolean hasDivideStage = jHasDivideStageCheckbox.isSelected();
+		boolean hasParseStage = jHasParseStageCheckbox.isSelected();
 		if (isInputDataValid(template, technology, username)) {
 			try {
-				String query = QueryProvider.toRegularQuery(QueryProvider.getInsertIntoParseTemplateIdempotentQuery(), template, technology, hasIdStage, isExchange);
-				int result = InsertIntoParseTemplate.insertIntoDatabase(Connector.getLiveFullConnection(), template, query);
+				String query = QueryProvider.toRegularQuery(QueryProvider.getInsertIntoParseTemplateIdempotentQuery(), template, technology, hasIdStage, isExchange, hasDivideStage, hasParseStage);
+				String server = jServerList.getSelectedItem().toString();
+				Connection connection = null;
+				if (server.matches("(?i)Live")) {
+					connection = Connector.getLiveFullConnection();
+				} else if (server.matches("(?i)Tsunami")) {
+					connection = Connector.getTsunamiConnection();
+				}
+				int result = InsertIntoParseTemplate.insertIntoDatabase(connection, template, query);
 				jInfoArea.append(InsertIntoParseTemplate.writeDbmodsFile(query, template, username) + "\n");
 				if(result == 1) {
 					jInfoArea.append(String.format("Template name [%s] successfully added%n", template));
@@ -249,6 +285,9 @@ public class InsertTemplateName extends javax.swing.JFrame {
 	
 	private static final String[] TECHNOLOGY = {
 		"java", "js"
+	};
+	private static final String[] SERVER = {
+		"LIVE", "Tsunami"
 	};
 	private JTextArea jInfoArea;
 	private JScrollPane scrollPane;
