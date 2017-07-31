@@ -24,6 +24,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.SpringLayout;
 
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
@@ -45,12 +46,13 @@ import sql.*;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
+@SuppressWarnings("serial")
 public class InsertTemplateName extends javax.swing.JFrame {
 	private JTextField jTemplateNameText;
 	private JLabel jTemplateNameLabel;
 	private JButton jRunButton;
-	private JComboBox jServerList;
-	private JComboBox jTechnologyList;
+	private JComboBox<String> jServerList;
+	private JComboBox<String> jTechnologyList;
 	private JLabel jUserNameLabel;
 	private JLabel jTechnologyLabel;
 	private JCheckBox jHasIdStageCheckbox;
@@ -84,104 +86,15 @@ public class InsertTemplateName extends javax.swing.JFrame {
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			getContentPane().setLayout(null);  
 			getContentPane().setName("Insert Into parse_template");
-			//START >>  jTemplateNameText
-			jTemplateNameText = new JTextField();  
-			getContentPane().add(jTemplateNameText);
-			jTemplateNameText.setText("");
-			jTemplateNameText.setBounds(192, 40, 185, 23);
-			//END <<  jTemplateNameText
-			//START >>  jTemplateNameLabel
-			jTemplateNameLabel = new JLabel();
-			getContentPane().add(jTemplateNameLabel);
-			jTemplateNameLabel.setText("Template Name");
-			jTemplateNameLabel.setBounds(28, 43, 152, 16);
-			//END <<  jTemplateNameLabel
-			//START >>  jHasIdStageCheckbox
-			jHasIdStageCheckbox = new JCheckBox();
-			getContentPane().add(jHasIdStageCheckbox);
-			jHasIdStageCheckbox.setText("Has ID Stage?");
-			jHasIdStageCheckbox.setBounds(47, 149, 122, 20);
-			//END <<  jHasIdStageCheckbox
-			//START >>  jIsExchange
-			jIsExchange = new JCheckBox();
-			getContentPane().add(jIsExchange);
-			jIsExchange.setText("Is Exchange?");
-			jIsExchange.setBounds(227, 149, 122, 20);
-			//END <<  jIsExchange
 			
-			//START >>  jHasDivideStageCheckbox
-			jHasDivideStageCheckbox = new JCheckBox();
-			getContentPane().add(jHasDivideStageCheckbox);
-			jHasDivideStageCheckbox.setText("Has Divide Stage?");
-			jHasDivideStageCheckbox.setBounds(47, 180, 142, 20);
-			//END <<  jHasDivideStageCheckbox
-			//START >>  jHasParseStageCheckbox
-			jHasParseStageCheckbox = new JCheckBox();
-			getContentPane().add(jHasParseStageCheckbox);
-			jHasParseStageCheckbox.setText("Has Parse Stage?");
-			jHasParseStageCheckbox.setBounds(227, 180, 142, 20);
-			//END <<  jHasParseStageCheckbox
+			addTemplateName();
+			addCheckboxes();
+			addTechnology();
+			addUserName();
+			addServer();
+			addLogWindow();
+			addInsertButton();
 			
-			//START >>  jTechnologyLabel
-			jTechnologyLabel = new JLabel();
-			getContentPane().add(jTechnologyLabel);
-			jTechnologyLabel.setText("Technology");
-			jTechnologyLabel.setBounds(28, 78, 152, 16);
-			//END <<  jTechnologyLabel
-			//START >>  jUserNameLabel
-			jUserNameLabel = new JLabel();
-			getContentPane().add(jUserNameLabel);
-			jUserNameLabel.setText("User");
-			jUserNameLabel.setBounds(28, 113, 146, 16);
-			//END <<  jUserNameLabel
-			//START >>  jRunButton
-			jRunButton = new JButton();
-			getContentPane().add(jRunButton);
-			jRunButton.setText("Insert");
-			jRunButton.setBounds(157, 351, 67, 23);
-			jRunButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					jRunButtonActionPerformed(evt);
-				}
-			});
-			//END <<  jRunButton
-			//START >>  jServerList
-			ComboBoxModel jServerListModel = 
-			new DefaultComboBoxModel(SERVER);
-			jServerList = new JComboBox();
-			getContentPane().add(jServerList);
-			jServerList.setModel(jServerListModel);
-			jServerList.setBounds(5, 5, 78, 23);
-			//END <<  jServerList
-			//START >>  jTechnologyList
-			ComboBoxModel jTechnologyListModel = 
-			new DefaultComboBoxModel(TECHNOLOGY);
-			jTechnologyList = new JComboBox();
-			getContentPane().add(jTechnologyList);
-			jTechnologyList.setModel(jTechnologyListModel);
-			jTechnologyList.setBounds(192, 75, 118, 23);
-			//END <<  jTechnologyList
-			//START >>  jUserList
-			ComboBoxModel jUserListModel = 
-			new DefaultComboBoxModel(USERS);
-			jUserList = new JComboBox();
-			getContentPane().add(jUserList);
-			jUserList.setModel(jUserListModel);
-			jUserList.setBounds(192, 110, 118, 23);
-			//END <<  jUserList
-			//START >>  jInfoArea
-			jInfoArea = new JTextArea();
-			scrollPane = new JScrollPane(jInfoArea);
-			scrollPane.setViewportView(jInfoArea);
-			getContentPane().add(scrollPane, BorderLayout.CENTER);
-			
-			Rectangle rect = new Rectangle(22, 223, 350, 115);
-			scrollPane.setBounds(rect);
-			jInfoArea.setEditable(false);
-			jInfoArea.setLineWrap(true);
-			jInfoArea.setWrapStyleWord(true);
-			jInfoArea.setBounds(rect);
-			//END <<  jInfoArea
 			pack();
 			this.setSize(410, 424);
 			jTemplateNameText.requestFocus();
@@ -191,6 +104,126 @@ public class InsertTemplateName extends javax.swing.JFrame {
 		}
 	}
 	
+	private void addInsertButton() {
+		//START >>  jRunButton
+		jRunButton = new JButton();
+		getContentPane().add(jRunButton);
+		jRunButton.setText("Insert");
+		jRunButton.setBounds(157, 351, 67, 23);
+		jRunButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				jRunButtonActionPerformed(evt);
+			}
+		});
+		//END <<  jRunButton
+	}
+
+	private void addLogWindow() {
+		//START >>  jInfoArea
+		jInfoArea = new JTextArea();
+		scrollPane = new JScrollPane(jInfoArea);
+		scrollPane.setViewportView(jInfoArea);
+		getContentPane().add(scrollPane, BorderLayout.CENTER);
+		
+		Rectangle rect = new Rectangle(22, 223, 350, 115);
+		scrollPane.setBounds(rect);
+		jInfoArea.setEditable(false);
+		jInfoArea.setLineWrap(true);
+		jInfoArea.setWrapStyleWord(true);
+		jInfoArea.setBounds(rect);
+		//END <<  jInfoArea
+	}
+
+	private void addServer() {
+		//START >>  jServerList
+		ComboBoxModel<String> jServerListModel = 
+		new DefaultComboBoxModel<String>(SERVER);
+		jServerList = new JComboBox<String>();
+		getContentPane().add(jServerList);
+		jServerList.setModel(jServerListModel);
+		jServerList.setBounds(5, 5, 78, 23);
+		//END <<  jServerList
+	}
+
+	private void addUserName() {
+		//START >>  jTechnologyLabel
+		jTechnologyLabel = new JLabel();
+		getContentPane().add(jTechnologyLabel);
+		jTechnologyLabel.setText("Technology");
+		jTechnologyLabel.setBounds(28, 78, 152, 16);
+		//END <<  jTechnologyLabel
+		
+		//START >>  jUserList
+		ComboBoxModel<String> jUserListModel = 
+		new DefaultComboBoxModel<String>(USERS);
+		jUserList = new JComboBox<String>();
+		getContentPane().add(jUserList);
+		jUserList.setModel(jUserListModel);
+		jUserList.setBounds(192, 110, 118, 23);
+		//END <<  jUserList
+	}
+
+	private void addTechnology() {
+		//START >>  jUserNameLabel
+		jUserNameLabel = new JLabel();
+		getContentPane().add(jUserNameLabel);
+		jUserNameLabel.setText("User");
+		jUserNameLabel.setBounds(28, 113, 146, 16);
+		//END <<  jUserNameLabel
+		
+		//START >>  jTechnologyList
+		ComboBoxModel<String> jTechnologyListModel = 
+		new DefaultComboBoxModel<String>(TECHNOLOGY);
+		jTechnologyList = new JComboBox<String>();
+		getContentPane().add(jTechnologyList);
+		jTechnologyList.setModel(jTechnologyListModel);
+		jTechnologyList.setBounds(192, 75, 118, 23);
+		//END <<  jTechnologyList
+	}
+
+	private void addTemplateName() {
+		//START >>  jTemplateNameText
+		jTemplateNameText = new JTextField();  
+		getContentPane().add(jTemplateNameText);
+		jTemplateNameText.setText("");
+		jTemplateNameText.setBounds(192, 40, 185, 23);
+		//END <<  jTemplateNameText
+		//START >>  jTemplateNameLabel
+		jTemplateNameLabel = new JLabel();
+		getContentPane().add(jTemplateNameLabel);
+		jTemplateNameLabel.setText("Template Name");
+		jTemplateNameLabel.setBounds(28, 43, 152, 16);
+		//END <<  jTemplateNameLabel
+	}
+	
+	private void addCheckboxes() {
+		//START >>  jHasIdStageCheckbox
+		jHasIdStageCheckbox = new JCheckBox();
+		getContentPane().add(jHasIdStageCheckbox);
+		jHasIdStageCheckbox.setText("Has ID Stage?");
+		jHasIdStageCheckbox.setBounds(47, 149, 122, 20);
+		//END <<  jHasIdStageCheckbox
+		//START >>  jIsExchange
+		jIsExchange = new JCheckBox();
+		getContentPane().add(jIsExchange);
+		jIsExchange.setText("Is Exchange?");
+		jIsExchange.setBounds(227, 149, 122, 20);
+		//END <<  jIsExchange
+		
+		//START >>  jHasDivideStageCheckbox
+		jHasDivideStageCheckbox = new JCheckBox();
+		getContentPane().add(jHasDivideStageCheckbox);
+		jHasDivideStageCheckbox.setText("Has Divide Stage?");
+		jHasDivideStageCheckbox.setBounds(47, 180, 142, 20);
+		//END <<  jHasDivideStageCheckbox
+		//START >>  jHasParseStageCheckbox
+		jHasParseStageCheckbox = new JCheckBox();
+		getContentPane().add(jHasParseStageCheckbox);
+		jHasParseStageCheckbox.setText("Has Parse Stage?");
+		jHasParseStageCheckbox.setBounds(227, 180, 142, 20);
+		//END <<  jHasParseStageCheckbox
+	}
+
 	private void initLabels() {
 		jTemplateNameLabel.setForeground(Color.black);
 		jTemplateNameLabel.setText("Template Name");
@@ -198,6 +231,9 @@ public class InsertTemplateName extends javax.swing.JFrame {
 		jTechnologyLabel.setText("Technology");
 		jUserNameLabel.setForeground(Color.black);
 		jUserNameLabel.setText("User");
+		jHasIdStageCheckbox.setForeground(Color.black);
+		jHasDivideStageCheckbox.setForeground(Color.black);
+		jHasParseStageCheckbox.setForeground(Color.black);
 	}
 	
 	private void jRunButtonActionPerformed(ActionEvent evt) {
@@ -209,7 +245,7 @@ public class InsertTemplateName extends javax.swing.JFrame {
 		boolean isExchange = jIsExchange.isSelected();
 		boolean hasDivideStage = jHasDivideStageCheckbox.isSelected();
 		boolean hasParseStage = jHasParseStageCheckbox.isSelected();
-		if (isInputDataValid(template, technology, username)) {
+		if (isInputDataValid(template, technology, username, hasIdStage, hasDivideStage, hasParseStage)) {
 			try {
 				String query = QueryProvider.toRegularQuery(QueryProvider.getInsertIntoParseTemplateIdempotentQuery(), template, technology, hasIdStage, isExchange, hasDivideStage, hasParseStage);
 				String server = jServerList.getSelectedItem().toString();
@@ -263,7 +299,7 @@ public class InsertTemplateName extends javax.swing.JFrame {
 		}
 	}
 	
-	private boolean isInputDataValid(String template, String technology, String username) {
+	private boolean isInputDataValid(String template, String technology, String username, boolean hasIdStage, boolean hasDivideStage, boolean hasParseStage) {
 		boolean isValid = true;
 		if (StringUtils.isBlank(template)) {
 			jTemplateNameLabel.setForeground(Color.red);
@@ -280,6 +316,12 @@ public class InsertTemplateName extends javax.swing.JFrame {
 			jUserNameLabel.setText("User is blank");
 			isValid = false;
 		}
+		if (!hasIdStage && !hasDivideStage && !hasParseStage) {
+			jHasIdStageCheckbox.setForeground(Color.red);
+			jHasDivideStageCheckbox.setForeground(Color.red);
+			jHasParseStageCheckbox.setForeground(Color.red);
+			isValid = false;
+		}
 		return isValid;
 	}
 	
@@ -291,7 +333,7 @@ public class InsertTemplateName extends javax.swing.JFrame {
 	};
 	private JTextArea jInfoArea;
 	private JScrollPane scrollPane;
-	private JComboBox jUserList;
+	private JComboBox<String> jUserList;
 	
 	private static final String[] USERS = {
 		"abogomolov", "akhakhlin", "mvasilenko", "sshupko", "vkisly", "vshuplyak", "vteryohina"
