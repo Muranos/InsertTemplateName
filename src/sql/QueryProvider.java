@@ -105,5 +105,21 @@ public class QueryProvider {
 		};
 		return linesToQuery(lines);
 	}
+	
+	   public static String getUpdateParseTemplateQuery() {
+	        String[] lines = {
+	                "UPDATE parse_template\n",
+	                "SET\n",
+	                "\tpt_name = ?,\n",
+	                "\tpt_technology = ?,\n",
+	                "\tpt_has_identify_stage = ?,\n",
+	                "\tpt_is_exchange = ?,\n",
+	                "\tpt_has_divide_stage = ?,\n",
+	                "\tpt_has_parse_stage = ?\n",
+	                "WHERE\n",
+	                "\tpt_name = ?"
+	        };
+	        return linesToQuery(lines);
+	    }
 
 }

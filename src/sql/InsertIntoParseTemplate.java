@@ -30,6 +30,17 @@ public class InsertIntoParseTemplate {
 			}
 		}
 	}
+	
+	   public static int updateInDatabase(Connection connection, String template, String query) throws SQLException {
+	        try {
+	            ResultFormatter.printConnectionPropertis(connection);
+	            return runUpdate(connection, template, query);
+	        } finally {
+	            if (connection != null) {
+	                connection.close();
+	            }
+	        }
+	    }
 
 	public static String writeDbmodsFile(String query, String template, String username) throws IOException {
 		//final String PATH = "D:\\svn.docufide.com\\parse_dbmods\\";
@@ -49,7 +60,7 @@ public class InsertIntoParseTemplate {
 			}
 		}
 	}
-
+	
 	private static int runInsert(Connection connection, String template, String query) throws SQLException {
 		Statement isAlreadyPresent = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 		ResultSet resultSet = isAlreadyPresent.executeQuery(String.format("SELECT * FROM parse_template WHERE pt_name = '%s'", template));
@@ -69,4 +80,17 @@ public class InsertIntoParseTemplate {
 			return -1;
 		}
 	}
+	
+	   private static int runUpdate(Connection connection, String template, String query) throws SQLException {
+	        Statement statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+	        ResultFormatter.printSqlWarnings(statement.getWarnings());
+	        int result = statement.executeUpdate(query);
+	        if (result == 1) {
+	            o.format("'%s' updated int parse_template table%n", template);
+	            return 1;
+	        } else {
+	            System.err.format("'%s' was not updated in parse_template table%n", template);
+	            return -1;
+	        }
+	    }
 }
